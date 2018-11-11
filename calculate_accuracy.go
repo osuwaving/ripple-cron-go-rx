@@ -8,7 +8,7 @@ import (
 
 func opCalculateAccuracy() {
 	defer wg.Done()
-	const initQuery = "SELECT id, 300_count, 100_count, 50_count, gekis_count, katus_count, misses_count, play_mode, accuracy FROM scores"
+	const initQuery = "SELECT id, 300_count, 100_count, 50_count, gekis_count, katus_count, misses_count, play_mode, accuracy FROM scores_relax"
 	rows, err := db.Query(initQuery)
 	if err != nil {
 		queryError(err, initQuery)
@@ -41,7 +41,7 @@ func opCalculateAccuracy() {
 		newAcc := calculateAccuracy(count300, count100, count50, countgeki, countkatu, countmiss, playMode)
 		// if accuracies are not accurate to the .001
 		if !math.IsNaN(newAcc) && math.Floor(newAcc*1000) != math.Floor((*accuracy)*1000) {
-			op("UPDATE scores SET accuracy = ? WHERE id = ?", newAcc, id)
+			op("UPDATE scores_relax SET accuracy = ? WHERE id = ?", newAcc, id)
 		}
 		count++
 	}

@@ -35,7 +35,7 @@ func opCleanReplays() {
 
 	// get ids of all scores in database
 	var repsDB []int
-	const scoresQuery = "SELECT id FROM scores WHERE completed = 3"
+	const scoresQuery = "SELECT id FROM scores_relax WHERE completed = 3"
 	err = db.Select(&repsDB, scoresQuery)
 	if err != nil {
 		queryError(err, scoresQuery)

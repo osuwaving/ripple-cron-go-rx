@@ -12,14 +12,14 @@ import (
 func opPopulateRedis() {
 	defer wg.Done()
 
-	s, err := r.Keys("ripple:leaderboard:*").Result()
+	s, err := r.Keys("ripple:leaderboardrelax:*").Result()
 	if err != nil {
 		color.Red("> PopulateRedis: %v", err)
 		return
 	}
 
 	if len(s) > 0 {
-		err = r.Eval("return redis.call('del', unpack(redis.call('keys', 'ripple:leaderboard:*')))", nil).Err()
+		err = r.Eval("return redis.call('del', unpack(redis.call('keys', 'ripple:leaderboardrelax:*')))", nil).Err()
 		if err != nil {
 			color.Red("> PopulateRedis: %v", err)
 			return
@@ -30,9 +30,9 @@ func opPopulateRedis() {
 
 	const initQuery = `
 SELECT
-	users_stats.id, users_stats.country, pp_std,
-	pp_taiko, pp_ctb, pp_mania,
-	playcount_std, playcount_taiko, playcount_ctb, playcount_mania,
+	users_stats.id, users_stats.country, pp_std_rx,
+	pp_taiko_rx, pp_ctb_rx, pp_mania,
+	playcount_std_rx, playcount_taiko_rx, playcount_ctb_rx, playcount_mania,
 	users.latest_activity
 FROM users_stats INNER JOIN users ON users.id = users_stats.id WHERE privileges & 1 > 0`
 
@@ -73,12 +73,12 @@ FROM users_stats INNER JOIN users ON users.id = users_stats.id WHERE privileges 
 			if isInactive(float64(currentSeconds-latestActivity), playcount[k]) {
 				continue
 			}
-			r.ZAdd("ripple:leaderboard:"+modes[k], redis.Z{
+			r.ZAdd("ripple:leaderboardrelax:"+modes[k], redis.Z{
 				Member: uid,
 				Score:  float64(v),
 			})
 			if country != "xx" && country != "" {
-				r.ZAdd("ripple:leaderboard:"+modes[k]+":"+country, redis.Z{
+				r.ZAdd("ripple:leaderboardrelax:"+modes[k]+":"+country, redis.Z{
 					Member: uid,
 					Score:  float64(v),
 				})

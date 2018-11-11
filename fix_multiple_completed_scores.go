@@ -4,7 +4,7 @@ import "github.com/fatih/color"
 
 func opFixMultipleCompletedScores() {
 	defer wg.Done()
-	const initQuery = "SELECT id, userid, beatmap_md5, play_mode, score FROM scores WHERE completed = 3 ORDER BY id DESC"
+	const initQuery = "SELECT id, userid, beatmap_md5, play_mode, score FROM scores_relax WHERE completed = 3 ORDER BY id DESC"
 	scores := []score{}
 	rows, err := db.Query(initQuery)
 	if err != nil {

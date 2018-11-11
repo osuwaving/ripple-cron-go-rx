@@ -60,7 +60,7 @@ func (c *coaeCollectionCollection) Add(n calculateOverallAccuracyElement) error 
 func opCalculateOverallAccuracy() {
 	defer wg.Done()
 	data := make(map[int]*coaeCollectionCollection)
-	const memeQuery = "SELECT users.id, scores.play_mode, scores.accuracy, scores.pp FROM scores INNER JOIN users ON users.id = scores.userid WHERE completed = '3'"
+	const memeQuery = "SELECT users.id, scores_relax.play_mode, scores_relax.accuracy, scores_relax.pp FROM scores_relax INNER JOIN users ON users.id = scores_relax.userid WHERE completed = '3'"
 	rows, err := db.Query(memeQuery)
 	if err != nil {
 		queryError(err, memeQuery)
@@ -98,7 +98,7 @@ func opCalculateOverallAccuracy() {
 		var accuracies string
 		var params []interface{}
 		for mode, scores := range info {
-			accuracies += "avg_accuracy_" + modes[mode] + " = ?"
+			accuracies += "avg_accuracy_" + modes[mode] + "_rx" + " = ?"
 			params = append(params, scores.Weighten())
 			if mode != len(info)-1 {
 				accuracies += ", "

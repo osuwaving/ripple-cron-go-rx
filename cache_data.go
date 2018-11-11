@@ -18,11 +18,11 @@ func opCacheData() {
 	// get data
 	const fetchQuery = `
 	SELECT
-		users.id as user_id, users.username, scores.play_mode,
-		scores.score, scores.completed, scores.300_count,
-		scores.100_count, scores.50_count
-	FROM scores
-	INNER JOIN users ON users.id=scores.userid`
+		users.id as user_id, users.username, scores_relax.play_mode,
+		scores_relax.score, scores_relax.completed, scores_relax.300_count,
+		scores_relax.100_count, scores_relax.50_count
+	FROM scores_relax
+	INNER JOIN users ON users.id=scores_relax.userid`
 	rows, err := db.Query(fetchQuery)
 	if err != nil {
 		queryError(err, fetchQuery)
@@ -78,7 +78,7 @@ func opCacheData() {
 	rows.Close()
 
 	if c.CacheLevel {
-		const totalScoreQuery = "SELECT id, total_score_std, total_score_taiko, total_score_ctb, total_score_mania FROM users_stats"
+		const totalScoreQuery = "SELECT id, total_score_std_rx, total_score_taiko_rx, total_score_ctb_rx, total_score_mania FROM users_stats"
 		rows, err := db.Query(totalScoreQuery)
 		if err != nil {
 			queryError(err, totalScoreQuery)
@@ -140,7 +140,7 @@ func opCacheData() {
 				if setQ != "" {
 					setQ += ", "
 				}
-				setQ += "level_" + modeToString(modeInt) + " = ?"
+				setQ += "level_" + modeToString(modeInt) + "_rx" + " = ?"
 				params = append(params, (*modeData).level)
 			}
 			if setQ != "" {

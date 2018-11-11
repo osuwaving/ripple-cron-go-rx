@@ -117,8 +117,8 @@ func main() {
 	}
 	if c.FixCompletedScores {
 		verboseln("Starting fixing completed = 3 scores on not ranked beatmaps")
-		go opSync(`UPDATE scores
-			INNER JOIN beatmaps ON beatmaps.beatmap_md5 = scores.beatmap_md5
+		go opSync(`UPDATE scores_relax
+			INNER JOIN beatmaps ON beatmaps.beatmap_md5 = scores_relax.beatmap_md5
 			SET completed = '2'
 			WHERE beatmaps.ranked < 1 OR beatmaps.ranked > 5;`)
 	}
@@ -128,8 +128,8 @@ func main() {
 	}
 	if c.UnrankScoresOnInvalidBeatmaps {
 		verboseln("Unranking scores on invalid beatmaps")
-		go opSync(`DELETE scores.* FROM scores
-		LEFT JOIN beatmaps ON scores.beatmap_md5 = beatmaps.beatmap_md5
+		go opSync(`DELETE scores_relax.* FROM scores_relax
+		LEFT JOIN beatmaps ON scores_relax.beatmap_md5 = beatmaps.beatmap_md5
 		WHERE beatmaps.beatmap_md5 IS NULL`)
 	}
 	if c.PrunePendingVerificationAfter > 0 {
